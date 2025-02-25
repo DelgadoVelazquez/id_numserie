@@ -23,7 +23,7 @@ class ProductoService {
     }
 
     async createProducto(producto) {
-        if (!producto.nombre || !producto.precio || !producto.fechaAdquisicion || !producto.numSerie || !producto.numInventario) {
+        if (!producto.nombre || !producto.precio || !producto.fechaAdquisicion || !producto.numSerie) {
             throw new Error('Todos los campos son requeridos');
         }
 
