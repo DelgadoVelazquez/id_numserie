@@ -1,5 +1,6 @@
 const express = require('express');
 const ProductoController = require('../controllers/producto.controller');
+const asignacionProductoController = require('../controllers/asignacionProducto.controller');
 
 const router = express.Router();
 
@@ -19,6 +20,9 @@ router.post('/', ProductoController.createProducto);
 router.delete('/:id', ProductoController.deleteProducto);
 
 router.put('/:id',ProductoController.updateProducto);
+
+router.get('/idPersona:id',asignacionProductoController.getAllAsignacionesProductosByPersona);
+router.post('/')
 
 
 module.exports = router;
