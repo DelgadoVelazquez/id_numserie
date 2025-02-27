@@ -1,4 +1,7 @@
+const asignacionProductoRepository = require('../repositories/asignacionProducto.repository');
+const personaRepository = require('../repositories/persona.repository');
 const AsignacionProductoService = require('../services/asignacionProducto.service');
+const PersonaService = require('../services/persona.service'); // Corrección en el nombre del archivo
 
 class AsignacionProductoController {
     async getAllAsignacionesActivas(req, res) {
@@ -22,18 +25,13 @@ class AsignacionProductoController {
 
     async createAsignacionProducto(req, res) {
         try {
-            const personaId= req.body.persona;
-            if(!personaId||personaId==''||personaId==null||personaId==undefined){
-                throw new Error('El ip de la persona es requerido')
-            }
+            const { personaId, productoId } = req.body;
 
-            if(!productoId||productoId==''||productoId==null||productoId==undefined){
-                throw new Error('El id del producto es requerido')
-            }
+            if (!personaId) throw new Error('El ID de la persona es requerido');
+            if (!productoId) throw new Error('El ID del producto es requerido');
 
-            const asignacionCreada = await AsignacionProductoService.createAsignacionProducto(personaId,
-                
-            )
+            const asignacionCreada = await AsignacionProductoService.createAsignacionProducto(personaId, productoId);
+            res.status(201).json(asignacionCreada);
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
@@ -60,4 +58,87 @@ class AsignacionProductoController {
     }
 }
 
-module.exports = new AsignacionProductoController();
+class PersonaController {
+    async getAllPersona(req, res) {
+        try {
+            const personas = await PersonaService.getAllPersonas();
+            res.status(200).json(personas);
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    }
+
+    async getPersonaById(req, res) { // Corregido el nombre del método
+        try {
+            const { id } = req.params;
+            if (!id) throw new Error('El id es requerido');
+
+            const persona = await PersonaService.getPersonaById(id);
+            res.json(persona);
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    }
+
+    async createPersona(req, res) {
+        try {
+            const persona = await PersonaService.createPersona(req.body);
+            res.status(201).json(persona);
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    }
+
+    async updatePersona(req, res) {
+        try {
+            const { id } = req.params;
+            if (!id) throw new Error('El id de la persona es requerido');
+
+            const persona = await PersonaService.updatePersona(id, req.body);
+            res.json(persona);
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    }
+
+    async deletePersona(req, res) {
+        try {
+            const { id } = req.params;
+            if (!id) throw new Error('El id de la persona es requerido');
+
+            await PersonaService.deletePersona(id);
+            res.status(204).json({ message: 'Persona eliminada correctamente' });
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    }
+
+    async createAsignacionProducto(){
+        try{
+        if (!personaId||productoRepository.length==0) throw new Error('El ID de la persona es requerido');
+        if (!productoId||productoRepository.length==0) throw new Error('El ID del producto es requerido');
+         
+    }
+    async createAsignacionProducto (personaId,productosId){
+        const persona = await personaRepository.getPersonaById(personaId);
+        if (!personaId||productoRepository.length==0) throw new Error('El ID de la persona es requerido');
+        let asignaciones =[]
+
+        for (let index =0; index<productoId.length; index++){
+            const productoId = productoId[index]
+            try{
+                const asignacionCreada = await asignacionProductoRepository
+            }
+
+        }
+
+    }
+
+
+    }
+}
+
+module.exports = {
+    AsignacionProductoController: new AsignacionProductoController(),
+    PersonaController: new PersonaController()
+};

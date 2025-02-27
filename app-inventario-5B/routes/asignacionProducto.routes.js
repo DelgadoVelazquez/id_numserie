@@ -18,4 +18,6 @@ router.put('/inactivar/:id', AsignacionProductoController.inactiveStatusAsignaci
 // Obtener una asignación de producto por ID
 router.get('/:id', AsignacionProductoController.getAsignacionProductoById);
 
+
+
 module.exports = router;

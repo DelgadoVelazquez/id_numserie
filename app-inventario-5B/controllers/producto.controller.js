@@ -1,104 +1,63 @@
-const ProductoService = require('../services/producto.service');
+const AsignacionProductoService = require('../services/asignacionProducto.service');
 
-class ProductoController {
-    async getAllProductos(req, res) {
+class AsignacionProductoController {
+    async getAllAsignacionesActivas(req, res) {
         try {
-            const productos = await ProductoService.getAllProductos();
-            res.json(productos);
+            const asignaciones = await AsignacionProductoService.getAllAsignacionesActivas();
+            res.json(asignaciones);
         } catch (error) {
-            res.status(500).json({ message: 'Error interno del servidor' });
+            res.status(500).json({ message: error.message });
         }
     }
 
-    async getProductoById(req, res) {
+    async getAllAsignacionesProductosByPersona(req, res) {
         try {
-            const producto = await ProductoService.getProductoById(req.params.id);
-            if (!producto) {
-                return res.status(404).json({ message: 'Producto no encontrado' });
-            }
-            res.json(producto);
+            const { personaId } = req.params;
+            const asignaciones = await AsignacionProductoService.getAllAsignacionesProductosByPersona(personaId);
+            res.json(asignaciones);
         } catch (error) {
-            res.status(500).json({ message: 'Error interno del servidor' });
+            res.status(500).json({ message: error.message });
         }
     }
 
-    async getProductoByNumSerie(req, res) {
+    async createAsignacionProducto(req, res) {
         try {
-            const producto = await ProductoService.getProductoByNumSerie(req.params.numSerie);
-            if (!producto) {
-                return res.status(404).json({ message: 'Producto no encontrado' });
-            }
-            res.json(producto);
-        } catch (error) {
-            res.status(500).json({ message: 'Error interno del servidor' });
-        }
-    }
+            const { personaId, productoId } = req.body;
 
-    async createProducto(req, res) {
-        try {
-            if (!req.body || Object.keys(req.body).length === 0) {
-                return res.status(400).json({ message: 'Datos del producto no proporcionados' });
+            if (!personaId || personaId === '' || personaId === null || personaId === undefined) {
+                throw new Error('El ID de la persona es requerido');
             }
-            const producto = await ProductoService.createProducto(req.body);
-            res.status(201).json(producto);
+
+            if (!productoId || productoId === '' || productoId === null || productoId === undefined) {
+                throw new Error('El ID del producto es requerido');
+            }
+
+            const asignacionCreada = await AsignacionProductoService.createAsignacionProducto(personaId, productoId);
+            res.status(201).json(asignacionCreada);
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
     }
 
-    async updateProducto(req, res) {
+    async inactiveStatusAsignacionProducto(req, res) {
         try {
             const { id } = req.params;
-            const datosActualizados = req.body;
-            if (!datosActualizados || Object.keys(datosActualizados).length === 0) {
-                return res.status(400).json({ message: 'Datos de actualización no proporcionados' });
-            }
-            const productoActualizado = await ProductoService.updateProducto(id, datosActualizados);
-            if (!productoActualizado) {
-                return res.status(404).json({ message: 'Producto no encontrado' });
-            }
-            res.json(productoActualizado);
+            const asignacion = await AsignacionProductoService.inactiveStatusAsignacionProducto(id);
+            res.json(asignacion);
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
     }
 
-    async deleteProducto(req, res) {
+    async getAsignacionProductoById(req, res) {
         try {
             const { id } = req.params;
-            const productoEliminado = await ProductoService.deleteProducto(id);
-            if (!productoEliminado) {
-                return res.status(404).json({ message: 'Producto no encontrado' });
-            }
-            res.json({ message: 'Producto eliminado correctamente' });
+            const asignacion = await AsignacionProductoService.getAsignacionProductoById(id);
+            res.json(asignacion);
         } catch (error) {
-            res.status(500).json({ message: 'Error interno del servidor' });
+            res.status(404).json({ message: error.message });
         }
     }
-
-    async contarProductosByYear(req, res) {
-        try {
-            const { year } = req.params;
-            if (!year || isNaN(year)) {
-                return res.status(400).json({ message: 'Año no válido' });
-            }
-            const total = await ProductoService.contarProductosByYear(parseInt(year));
-            res.json({ total });
-        } catch (error) {
-            res.status(500).json({ message: 'Error interno del servidor' });
-        }
-    }
-    async updateProducto(req, res) {
-        try {
-           const producto = await ProductoService.updateProducto(req.params.id,req.body);
-           res.json(producto)
-        } catch (error) {
-            res.status(400).json({ message: error.message });
-        }
-    }
-
-
-    
 }
 
-module.exports = new ProductoController();
+module.exports = new AsignacionProductoController();
